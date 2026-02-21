@@ -1,13 +1,13 @@
 [package]
-edition = "2021"
-license = "MIT"
-name    = "zed_psalm"
-publish = false
+name = "psalm-zed"
 version = "0.0.1"
+edition = "2021"
+publish = false
+license = "MIT"
 
 [lib]
+path = "src/lib.rs"
 crate-type = ["cdylib"]
-path       = "src/psalm.rs"
 
 [dependencies]
 zed_extension_api = "0.7.0"

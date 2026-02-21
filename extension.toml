@@ -1,10 +1,14 @@
-authors        = ["Peter"]
-description    = "Zed extension for Psalm, a static analysis tool for PHP"
-id             = "psalm"
-name           = "Psalm"
-repository     = "https://github.com/peterjbassi/psalm-zed"
+id = "psalm"
+name = "Psalm"
+version = "0.0.1"
 schema_version = 1
-version        = "0.0.2"
+authors = ["Peter"]
+description = "Psalm PHP static analysis integration for Zed"
+repository = "https://github.com/peter/psalm-zed"
 
 [language_servers.psalm]
-languages         = ["PHP"]
+name = "Psalm"
+languages = ["PHP"]
+
+[language_servers.psalm.language_ids]
+PHP = "php"
