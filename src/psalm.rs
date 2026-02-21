@@ -60,11 +60,20 @@ impl zed::Extension for PsalmExtension {
 
         // check and run psalm with custom binary
         if let Some(binary) = settings.binary {
+            let command = binary
+                .path
+                .map_or(PSALM_BINARY_NAME.to_string(), |path| path);
+
+            // If custom arguments are provided, use them as-is.
+            // Otherwise use our constructed args (which include --language-server).
+            let args = match binary.arguments {
+                Some(custom_args) if !custom_args.is_empty() => custom_args,
+                _ => args,
+            };
+
             return Ok(zed::Command {
-                command: binary
-                    .path
-                    .map_or(PSALM_BINARY_NAME.to_string(), |path| path),
-                args: binary.arguments.map_or(args, |args| args),
+                command,
+                args,
                 env: Default::default(),
             });
         }
