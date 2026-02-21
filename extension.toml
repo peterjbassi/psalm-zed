@@ -1,8 +1,8 @@
-authors        = ["sebcode"]
+authors        = ["Peter"]
 description    = "Zed extension for Psalm, a static analysis tool for PHP"
 id             = "psalm"
 name           = "Psalm"
-repository     = "https://github.com/sebcode/psalm-zed"
+repository     = "https://github.com/peterjbassi/psalm-zed"
 schema_version = 1
 version        = "0.0.2"
 
