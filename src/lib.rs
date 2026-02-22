@@ -20,13 +20,13 @@ impl zed::Extension for PsalmExtension {
         // cannot read binary/executable files from the Wasm sandbox.
         // The shell handles existence checks and launches the correct binary.
         let shell_cmd = format!(
-            "if test -x '{vendor_ls}'; then exec '{vendor_ls}' --no-progress; \
-             elif test -x '{vendor_psalm}'; then exec '{vendor_psalm}' --language-server --no-progress; \
+            "if test -x '{vendor_ls}'; then exec '{vendor_ls}' --verbose --config psalm.xml; \
+             elif test -x '{vendor_psalm}'; then exec '{vendor_psalm}' --language-server --verbose --config psalm.xml; \
              else echo 'psalm-zed: could not find psalm in {root}/vendor/bin/' >&2; exit 1; fi"
         );
 
         Ok(zed::Command {
-            command: "sh".to_string(),
+            command: "/bin/sh".to_string(),
             args: vec!["-c".to_string(), shell_cmd],
             env: worktree.shell_env(),
         })
