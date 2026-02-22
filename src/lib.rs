@@ -15,7 +15,7 @@ impl zed::Extension for PsalmExtension {
         if let Some(path) = worktree.which("psalm-language-server") {
             return Ok(zed::Command {
                 command: path,
-                args: vec![],
+                args: vec!["--no-progress".to_string()],
                 env: worktree.shell_env(),
             });
         }
@@ -23,7 +23,10 @@ impl zed::Extension for PsalmExtension {
         if let Some(path) = worktree.which("psalm") {
             return Ok(zed::Command {
                 command: path,
-                args: vec!["--language-server".to_string()],
+                args: vec![
+                    "--language-server".to_string(),
+                    "--no-progress".to_string(),
+                ],
                 env: worktree.shell_env(),
             });
         }
