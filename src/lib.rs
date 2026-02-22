@@ -12,33 +12,22 @@ impl zed::Extension for PsalmExtension {
         _language_server_id: &zed::LanguageServerId,
         worktree: &zed::Worktree,
     ) -> Result<zed::Command> {
-        let vendor_ls = format!("{}/vendor/bin/psalm-language-server", worktree.root_path());
-        let vendor_psalm = format!("{}/vendor/bin/psalm", worktree.root_path());
+        let root = worktree.root_path();
+        let vendor_ls = format!("{root}/vendor/bin/psalm-language-server");
+        let vendor_psalm = format!("{root}/vendor/bin/psalm");
 
-        let (command, use_language_server_flag) =
-            if worktree.read_text_file("vendor/bin/psalm-language-server").is_ok() {
-                (vendor_ls, false)
-            } else if worktree.read_text_file("vendor/bin/psalm").is_ok() {
-                (vendor_psalm, true)
-            } else {
-                return Err(format!(
-                    "Could not find psalm-language-server or psalm in {}/vendor/bin/. \
-                     Install Psalm with: composer require --dev vimeo/psalm",
-                    worktree.root_path()
-                ));
-            };
-
-        let mut args = Vec::new();
-        if use_language_server_flag {
-            args.push("--language-server".to_string());
-        }
-        args.push("--no-progress".to_string());
-
-        println!("psalm-zed: running {} {}", command, args.join(" "));
+        // Use sh -c with test -x to check executables, since read_text_file
+        // cannot read binary/executable files from the Wasm sandbox.
+        // The shell handles existence checks and launches the correct binary.
+        let shell_cmd = format!(
+            "if test -x '{vendor_ls}'; then exec '{vendor_ls}' --no-progress; \
+             elif test -x '{vendor_psalm}'; then exec '{vendor_psalm}' --language-server --no-progress; \
+             else echo 'psalm-zed: could not find psalm in {root}/vendor/bin/' >&2; exit 1; fi"
+        );
 
         Ok(zed::Command {
-            command,
-            args,
+            command: "sh".to_string(),
+            args: vec!["-c".to_string(), shell_cmd],
             env: worktree.shell_env(),
         })
     }
